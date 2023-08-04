@@ -11,9 +11,27 @@ conda install -c huggingface transformers
 streamlit run app.py
 ```
 
+## Google Colab
+
+```sh
+!git clone https://github.com/marceloxp/chatwithcsv.git
+%cd chatwithcsv
+!ls
+!wget --progress=bar:force https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q8_0.bin
+!ls -lah
+!pip install -r requirements.txt
+!npm init -y
+
+!pip install -r requirements.txt
+!npm install localtunnel
+!streamlit run app.py &>/content/logs.txt &
+!npx localtunnel --port 8501
+```
+
 ## Model
 
-- https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/blob/main/llama-2-7b-chat.ggmlv3.q8_0.bin
+- Page: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/blob/main/llama-2-7b-chat.ggmlv3.q8_0.bin
+- Link Address: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q8_0.bin
 
 ## Video
 
