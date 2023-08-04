@@ -18,3 +18,11 @@ streamlit run app.py
 ## Video
 
 - https://www.youtube.com/watch?v=_WB10mFa4T8
+
+## Utilização:
+
+- Pergunta: Qual ator fez o filme com pior nota?
+- Resposta: The actor who made the film with the worst note is Alexander Wilson, with a score of 8.4.
+
+- Pergunta: Qual filme teve a melhor nota? Por favor me responda em português.
+- Resposta: O melhor filme foi "Filme K" com nota 9.2.
