@@ -6,27 +6,35 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import CTransformers
 from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import RetrievalQA
+from langchain.chains.summarize import load_summarize_chain
+from langchain.chains import AnalyzeDocumentChain
 
 DB_FAISS_PATH = "vectorstore/db_faiss"
 
 # Loading the model
 def load_llm(use_llm):
     # Load the locally downloaded model here
-    if use_llm == "Llama 2 7B":
+    if use_llm == "Llama 2 7B Chat":
         llm = CTransformers(
             model="llama-2-7b-chat.ggmlv3.q8_0.bin",
             model_type="llama",
-            gpu_layers=3,
             max_new_tokens=256,
-            temperature=0.3,
+            temperature=0.1,
         )
-    elif use_llm == "Llama 2 13B":
+    elif use_llm == "Llama 2 13B Chat":
         llm = CTransformers(
             model="llama-2-13b-chat.ggmlv3.q8_0.bin",
             model_type="llama",
-            gpu_layers=3,
             max_new_tokens=256,
-            temperature=0.3,
+            temperature=0.1,
+        )
+    elif use_llm == "Open Llama 3B v2":
+        llm = CTransformers(
+            model="open-llama-3b-v2-q4_0.bin",
+            model_type="llama",
+            max_new_tokens=256,
+            temperature=0.1,
         )
     return llm
 
@@ -40,18 +48,28 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-uploaded_file = st.sidebar.file_uploader("Upload your Data", type="csv")
-
 use_llm = st.sidebar.selectbox(
     "Model",
     [
-        "Llama 2 7B",
-        "Llama 2 13B",
+        "Open Llama 3B v2",
+        "Llama 2 7B Chat",
+        "Llama 2 13B Chat",
     ],
     index=0,
     key="use_llm",
 )
-st.sidebar.write('Model selected:', use_llm)
+
+method_type = st.sidebar.selectbox(
+    "Method",
+    [
+        "QA",
+        "Conversational",
+    ],
+    index=0,
+    key="method_type",
+)
+
+uploaded_file = st.sidebar.file_uploader("Upload your Data", type="csv")
 
 cpu_type = st.sidebar.selectbox(
     "CPU",
@@ -63,6 +81,8 @@ cpu_type = st.sidebar.selectbox(
     key="cpu_type",
 )
 st.sidebar.write('CPU selected:', cpu_type)
+
+st.sidebar.write('# Basic Question \nWhich actor made the movie with worse rating?')
 
 if uploaded_file:
     status('Carregando arquivo...')
@@ -90,14 +110,22 @@ if uploaded_file:
     llm = load_llm(use_llm)
     status('Definindo conversational chain...')
     retriever=db.as_retriever()
-    chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=retriever)
+    if method_type == "QA":
+        chain = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=db.as_retriever())
+    else:
+        chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=retriever)
 
-    def conversational_chat(query):
+    def query(query):
         status('Procesando mensagem...')
-        result = chain({"question": query, "chat_history": st.session_state["history"]})
+        if method_type == "QA":
+            result = chain(query)
+            text = result["result"]
+        else:
+            result = chain({"question": query, "chat_history": st.session_state["history"]})
+            text = result["answer"]
         status('Resposta recebida')
-        st.session_state["history"].append((query, result["answer"]))
-        return result["answer"]
+        st.session_state["history"].append((query, text))
+        return text
 
     if "history" not in st.session_state:
         st.session_state["history"] = []
@@ -123,8 +151,7 @@ if uploaded_file:
             submit_button = st.form_submit_button(label="Send")
 
         if submit_button and user_input:
-            output = conversational_chat(user_input)
-
+            output = query(user_input)
             st.session_state["past"].append(user_input)
             st.session_state["generated"].append(output)
 

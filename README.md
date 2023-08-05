@@ -39,17 +39,25 @@ streamlit run app.py
 - Page: https://huggingface.co/TheBloke/Llama-2-13B-chat-GGML/blob/main/llama-2-13b-chat.ggmlv3.q8_0.bin
 - Link Address: https://huggingface.co/TheBloke/Llama-2-13B-chat-GGML/resolve/main/llama-2-13b-chat.ggmlv3.q8_0.bin
 
+### Open Llama 3B v2
+
+- Page: https://huggingface.co/SlyEcho/open_llama_3b_v2_ggml/blob/main/open-llama-3b-v2-q4_0.bin
+- Link Address: https://huggingface.co/SlyEcho/open_llama_3b_v2_ggml/resolve/main/open-llama-3b-v2-q4_0.bin
+
 ## Video
 
 - https://www.youtube.com/watch?v=_WB10mFa4T8
 
 ## Utilização:
 
-- Pergunta: Qual ator fez o filme com pior nota?
-- Resposta: The actor who made the film with the worst note is Alexander Wilson, with a score of 8.4.
+- Pergunta 1
+  - Pergunta: Qual ator fez o filme com pior nota?
+  - Resposta: The actor who made the film with the worst note is Alexander Wilson, with a score of 8.4.
 
-- Pergunta: Qual filme teve a melhor nota? Por favor me responda em português.
-- Resposta: O melhor filme foi "Filme K" com nota 9.2.
+- Pergunta 2
+  - Pergunta: Qual filme teve a melhor nota? Por favor me responda em português.
+  - Resposta: O melhor filme foi "Filme K" com nota 9.2.
 
-- Pergunta: Which actor made the movie with worse rating?
-- Resposta: 
+- Pergunta 3
+  - Pergunta: Which actor made the movie with worse rating?
+  - Resposta: 
