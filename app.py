@@ -13,6 +13,7 @@ from langchain.chains import AnalyzeDocumentChain
 DB_FAISS_PATH = "vectorstore/db_faiss"
 
 # Loading the model
+@st.cache_resource(show_spinner="Loading model...")
 def load_llm(use_llm):
     # Load the locally downloaded model here
     if use_llm == "Llama 2 7B Chat":
