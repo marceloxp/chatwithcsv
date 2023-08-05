@@ -16,15 +16,17 @@ def load_llm(use_llm):
         llm = CTransformers(
             model="llama-2-7b-chat.ggmlv3.q8_0.bin",
             model_type="llama",
-            max_new_tokens=512,
-            temperature=0.5,
+            gpu_layers=3,
+            max_new_tokens=256,
+            temperature=0.3,
         )
     elif use_llm == "Llama 2 13B":
         llm = CTransformers(
             model="llama-2-13b-chat.ggmlv3.q8_0.bin",
             model_type="llama",
-            max_new_tokens=512,
-            temperature=0.5,
+            gpu_layers=3,
+            max_new_tokens=256,
+            temperature=0.3,
         )
     return llm
 
@@ -49,11 +51,21 @@ use_llm = st.sidebar.selectbox(
     index=0,
     key="use_llm",
 )
+st.sidebar.write('Model selected:', use_llm)
 
-st.write('You selected:', use_llm)
+cpu_type = st.sidebar.selectbox(
+    "CPU",
+    [
+        "cpu",
+        "cuda",
+    ],
+    index=0,
+    key="cpu_type",
+)
+st.sidebar.write('CPU selected:', cpu_type)
 
 if uploaded_file:
-    status('Carregando dados...')
+    status('Carregando arquivo...')
     # use tempfile because CSVLoader only accepts a file_path
     with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
         tmp_file.write(uploaded_file.getvalue())
@@ -63,10 +75,11 @@ if uploaded_file:
         file_path=tmp_file_path, encoding="utf-8", csv_args={"delimiter": ","}
     )
     data = loader.load()
-    # st.json(data)
+    
+    status('Lendo embedding...')
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
-        model_kwargs={"device": "cpu"},
+        model_kwargs={"device": cpu_type},
     )
 
     status('Carregando banco de dados...')
@@ -75,10 +88,12 @@ if uploaded_file:
 
     status('Carregando modelo...')
     llm = load_llm(use_llm)
-    chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=db.as_retriever())
+    status('Definindo conversational chain...')
+    retriever=db.as_retriever()
+    chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=retriever)
 
     def conversational_chat(query):
-        status('Enviando mensagem...')
+        status('Procesando mensagem...')
         result = chain({"question": query, "chat_history": st.session_state["history"]})
         status('Resposta recebida')
         st.session_state["history"].append((query, result["answer"]))
