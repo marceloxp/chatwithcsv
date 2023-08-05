@@ -18,6 +18,7 @@ streamlit run app.py
 %cd chatwithcsv
 !ls
 !wget --progress=bar:force https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q8_0.bin
+!wget --progress=bar:force https://huggingface.co/TheBloke/Llama-2-13B-chat-GGML/resolve/main/llama-2-13b-chat.ggmlv3.q8_0.bin
 !ls -lah
 !pip install -r requirements.txt
 !npm init -y
@@ -28,8 +29,15 @@ streamlit run app.py
 
 ## Model
 
+### Llama 2 7B Chat
+
 - Page: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/blob/main/llama-2-7b-chat.ggmlv3.q8_0.bin
 - Link Address: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q8_0.bin
+
+### Llama 2 13B Chat
+
+- Page: https://huggingface.co/TheBloke/Llama-2-13B-chat-GGML/blob/main/llama-2-13b-chat.ggmlv3.q8_0.bin
+- Link Address: https://huggingface.co/TheBloke/Llama-2-13B-chat-GGML/resolve/main/llama-2-13b-chat.ggmlv3.q8_0.bin
 
 ## Video
 
@@ -43,5 +51,5 @@ streamlit run app.py
 - Pergunta: Qual filme teve a melhor nota? Por favor me responda em português.
 - Resposta: O melhor filme foi "Filme K" com nota 9.2.
 
-- Pergunta: Which actor made the movie with worse grade?
+- Pergunta: Which actor made the movie with worse rating?
 - Resposta: 

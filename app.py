@@ -10,14 +10,22 @@ from langchain.chains import ConversationalRetrievalChain
 DB_FAISS_PATH = "vectorstore/db_faiss"
 
 # Loading the model
-def load_llm():
+def load_llm(use_llm):
     # Load the locally downloaded model here
-    llm = CTransformers(
-        model="llama-2-7b-chat.ggmlv3.q8_0.bin",
-        model_type="llama",
-        max_new_tokens=512,
-        temperature=0.5,
-    )
+    if use_llm == "Llama 2 7B":
+        llm = CTransformers(
+            model="llama-2-7b-chat.ggmlv3.q8_0.bin",
+            model_type="llama",
+            max_new_tokens=512,
+            temperature=0.5,
+        )
+    elif use_llm == "Llama 2 13B":
+        llm = CTransformers(
+            model="llama-2-13b-chat.ggmlv3.q8_0.bin",
+            model_type="llama",
+            max_new_tokens=512,
+            temperature=0.5,
+        )
     return llm
 
 element_status = st.info('Inicializando aplicação...', icon="📟")
@@ -31,6 +39,18 @@ st.markdown(
 )
 
 uploaded_file = st.sidebar.file_uploader("Upload your Data", type="csv")
+
+use_llm = st.sidebar.selectbox(
+    "Model",
+    [
+        "Llama 2 7B",
+        "Llama 2 13B",
+    ],
+    index=0,
+    key="use_llm",
+)
+
+st.write('You selected:', use_llm)
 
 if uploaded_file:
     status('Carregando dados...')
@@ -54,7 +74,7 @@ if uploaded_file:
     db.save_local(DB_FAISS_PATH)
 
     status('Carregando modelo...')
-    llm = load_llm()
+    llm = load_llm(use_llm)
     chain = ConversationalRetrievalChain.from_llm(llm=llm, retriever=db.as_retriever())
 
     def conversational_chat(query):
@@ -106,4 +126,4 @@ if uploaded_file:
                     st.session_state["generated"][i], key=str(i), avatar_style="no-avatar"
                 )
 
-    status('Aplicação pronta!')
+status('Aplicação pronta!')
