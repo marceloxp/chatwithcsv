@@ -21,8 +21,6 @@ streamlit run app.py
 !ls -lah
 !pip install -r requirements.txt
 !npm init -y
-
-!pip install -r requirements.txt
 !npm install localtunnel
 !streamlit run app.py &>/content/logs.txt &
 !npx localtunnel --port 8501
@@ -44,3 +42,6 @@ streamlit run app.py
 
 - Pergunta: Qual filme teve a melhor nota? Por favor me responda em português.
 - Resposta: O melhor filme foi "Filme K" com nota 9.2.
+
+- Pergunta: Which actor made the movie with worse grade?
+- Resposta: 
