@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 from streamlit_chat import message
 import tempfile
@@ -46,15 +47,23 @@ def load_llm(use_llm):
         )
     return llm
 
-element_status = st.info('Inicializando aplicação...', icon="📟")
+st.set_page_config(
+    page_title="Talk to your csv data",
+    page_icon="🗄️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+col1, col2 = st.columns([3,1])
+
+with col1:
+    element_status = st.sidebar.info('Inicializando aplicação...', icon="📟")
+
 def status(message, icon="⏳"):
     element_status.info(message, icon=icon)
 
-st.title("Chat with CSV using Llama2 🦙🦜")
-st.markdown(
-    "<h3 style='text-align: center; color: white;'>Built by <a href='https://github.com/AIAnytime'>AI Anytime with ❤️ </a></h3>",
-    unsafe_allow_html=True,
-)
+with col1:
+    st.title("Chat with CSV using Llama2 🦙🦜")
 
 use_llm = st.sidebar.selectbox(
     "Model",
@@ -93,6 +102,9 @@ st.sidebar.write('CPU selected:', cpu_type)
 
 st.sidebar.write('# Basic Question \nWhich actor made the movie with worse rating?')
 
+st.sidebar.markdown("Built by [AI Anytime](https://github.com/AIAnytime) with ❤️")
+st.sidebar.markdown("Changed by [MarceloXP](https://github.com/marceloxp) with 🤪")
+
 if uploaded_file:
     status('Carregando arquivo...')
     # use tempfile because CSVLoader only accepts a file_path
@@ -104,6 +116,11 @@ if uploaded_file:
         file_path=tmp_file_path, encoding="utf-8", csv_args={"delimiter": ","}
     )
     data = loader.load()
+
+    with col2:
+        df = pd.read_csv(tmp_file_path)
+        st.write('## Data uploaded')
+        st.write(df[:25])
     
     status('Lendo embedding...')
     embeddings = HuggingFaceEmbeddings(
@@ -147,34 +164,38 @@ if uploaded_file:
     if "past" not in st.session_state:
         st.session_state["past"] = ["Hey ! 👋"]
 
-    # container for the chat history
-    response_container = st.container()
-    # container for the user's text input
-    container = st.container()
+    with col1:
+        # container for the chat history
+        response_container = st.container()
+        # container for the user's text input
+        container = st.container()
 
-    with container:
-        with st.form(key="my_form", clear_on_submit=True):
-            user_input = st.text_input(
-                "Query:", placeholder="Talk to your csv data here (:", key="input"
-            )
-            submit_button = st.form_submit_button(label="Send")
-
-        if submit_button and user_input:
-            output = query(user_input)
-            st.session_state["past"].append(user_input)
-            st.session_state["generated"].append(output)
-
-    if st.session_state["generated"]:
-        with response_container:
-            for i in range(len(st.session_state["generated"])):
-                message(
-                    st.session_state["past"][i],
-                    is_user=True,
-                    key=str(i) + "_user",
-                    avatar_style="no-avatar",
+        with container:
+            with st.form(key="my_form", clear_on_submit=True):
+                user_input = st.text_input(
+                    "Query:", placeholder="Talk to your csv data here (:", key="input"
                 )
-                message(
-                    st.session_state["generated"][i], key=str(i), avatar_style="no-avatar"
-                )
+                submit_button = st.form_submit_button(label="Send")
+
+            if submit_button and user_input:
+                output = query(user_input)
+                st.session_state["past"].append(user_input)
+                st.session_state["generated"].append(output)
+
+        if st.session_state["generated"]:
+            with response_container:
+                for i in range(len(st.session_state["generated"])):
+                    message(
+                        st.session_state["past"][i],
+                        is_user=True,
+                        key=str(i) + "_user",
+                        avatar_style="no-avatar",
+                    )
+                    message(
+                        st.session_state["generated"][i], key=str(i), avatar_style="no-avatar"
+                    )
+else:
+    with col2:
+        st.info('No data uploaded', icon="🚳")
 
 status('Aplicação pronta!', icon="✅")
