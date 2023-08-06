@@ -15,35 +15,35 @@ DB_FAISS_PATH = "vectorstore/db_faiss"
 
 # Loading the model
 @st.cache_resource(show_spinner="Loading model...")
-def load_llm(use_llm):
+def load_llm(use_llm, temperature=0.1):
     # Load the locally downloaded model here
     if use_llm == "Llama 2 7B Chat":
         llm = CTransformers(
             model="llama-2-7b-chat.ggmlv3.q8_0.bin",
             model_type="llama",
             max_new_tokens=256,
-            temperature=0.1,
+            temperature=temperature,
         )
     elif use_llm == "Llama 2 13B Chat":
         llm = CTransformers(
             model="llama-2-13b-chat.ggmlv3.q8_0.bin",
             model_type="llama",
             max_new_tokens=256,
-            temperature=0.1,
+            temperature=temperature,
         )
     elif use_llm == "Open Llama 3B v2":
         llm = CTransformers(
             model="open-llama-3b-v2-q4_0.bin",
             model_type="llama",
             max_new_tokens=256,
-            temperature=0.1,
+            temperature=temperature,
         )
     elif use_llm == "Mamba GPT-3B":
         llm = CTransformers(
             model="mamba-gpt-3b-v3.ggmlv3.q4_0.bin",
             model_type="llama",
             max_new_tokens=256,
-            temperature=0.1,
+            temperature=temperature,
         )
     return llm
 
@@ -98,10 +98,17 @@ cpu_type = st.sidebar.selectbox(
     index=0,
     key="cpu_type",
 )
-st.sidebar.write('CPU selected:', cpu_type)
 
-st.sidebar.write('# Basic Question \nWhich actor made the movie with worse rating?')
+temperature = st.sidebar.slider(
+    "Temperature",
+    min_value=0.1,
+    max_value=1.0,
+    value=0.1,
+    key="temperature",
+    step=0.1
+)
 
+st.sidebar.write('# Example Question \nWhich actor made the movie with worse rating?')
 st.sidebar.markdown("Built by [AI Anytime](https://github.com/AIAnytime) with ❤️")
 st.sidebar.markdown("Changed by [MarceloXP](https://github.com/marceloxp) with 🤪")
 
@@ -133,7 +140,7 @@ if uploaded_file:
     db.save_local(DB_FAISS_PATH)
 
     status('Carregando modelo...')
-    llm = load_llm(use_llm)
+    llm = load_llm(use_llm, temperature)
     status('Definindo conversational chain...')
     retriever=db.as_retriever()
     if method_type == "QA":
