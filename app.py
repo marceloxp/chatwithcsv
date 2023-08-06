@@ -40,8 +40,8 @@ def load_llm(use_llm):
     return llm
 
 element_status = st.info('Inicializando aplicação...', icon="📟")
-def status(message):
-    element_status.info(message, icon="📟")
+def status(message, icon="⏳"):
+    element_status.info(message, icon=icon)
 
 st.title("Chat with CSV using Llama2 🦙🦜")
 st.markdown(
@@ -63,8 +63,8 @@ use_llm = st.sidebar.selectbox(
 method_type = st.sidebar.selectbox(
     "Method",
     [
-        "QA",
         "Conversational",
+        "QA",
     ],
     index=0,
     key="method_type",
@@ -169,4 +169,4 @@ if uploaded_file:
                     st.session_state["generated"][i], key=str(i), avatar_style="no-avatar"
                 )
 
-status('Aplicação pronta!')
+status('Aplicação pronta!', icon="✅")
