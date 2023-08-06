@@ -44,6 +44,11 @@ streamlit run app.py
 - Page: https://huggingface.co/SlyEcho/open_llama_3b_v2_ggml/blob/main/open-llama-3b-v2-q4_0.bin
 - Link Address: https://huggingface.co/SlyEcho/open_llama_3b_v2_ggml/resolve/main/open-llama-3b-v2-q4_0.bin
 
+### Mamba GPT-3B
+
+- Page: https://huggingface.co/s3nh/mamba-gpt-3b-v3-GGML/blob/main/mamba-gpt-3b-v3.ggmlv3.q4_0.bin
+- Link: https://huggingface.co/s3nh/mamba-gpt-3b-v3-GGML/resolve/main/mamba-gpt-3b-v3.ggmlv3.q4_0.bin
+
 ## Video
 
 - https://www.youtube.com/watch?v=_WB10mFa4T8

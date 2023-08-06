@@ -37,6 +37,13 @@ def load_llm(use_llm):
             max_new_tokens=256,
             temperature=0.1,
         )
+    elif use_llm == "Mamba GPT-3B":
+        llm = CTransformers(
+            model="mamba-gpt-3b-v3.ggmlv3.q4_0.bin",
+            model_type="llama",
+            max_new_tokens=256,
+            temperature=0.1,
+        )
     return llm
 
 element_status = st.info('Inicializando aplicação...', icon="📟")
@@ -55,6 +62,7 @@ use_llm = st.sidebar.selectbox(
         "Open Llama 3B v2",
         "Llama 2 7B Chat",
         "Llama 2 13B Chat",
+        "Mamba GPT-3B",
     ],
     index=0,
     key="use_llm",
